@@ -1,14 +1,17 @@
 package com.example.softwaredesign_lab4.model
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Parcelize
+@Entity
 data class Post(
     val title: String,
     val content: String,
     val date: String,
     val image: String,
-    val link:String,
+    @PrimaryKey
+    val link: String,
     var cachedImage: String = ""
-) : Parcelable
+) {
+    constructor() : this("", "", "", "", "")
+}

@@ -23,7 +23,7 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_post_list, container, false)
-
+        allPosts = emptyList()
         if (view is RecyclerView) {
             with(view) {
                 layoutManager = LinearLayoutManager(context)
