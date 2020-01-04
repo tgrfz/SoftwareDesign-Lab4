@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/postContentHolder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:paddingTop="12dp"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/postImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/postTitle"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="15dp"
+        android:contentDescription="@string/post_image"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/postDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/postTitle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:hint="@string/date"
+        android:maxLines="1"
+        android:textIsSelectable="false"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/postTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:hint="@string/title"
+        android:maxLines="2"
+        android:textIsSelectable="false"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/postContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/postTitle"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_toEndOf="@id/postImage"
+        android:gravity="start"
+        android:hint="@string/points"
+        android:maxLines="6"
+        android:textIsSelectable="false"
+        android:textSize="12sp" />
+
+</RelativeLayout>
+
