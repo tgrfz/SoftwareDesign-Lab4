@@ -77,9 +77,10 @@ class MyPostRecyclerViewAdapter(
 
             itemView.pubDate.text = pubDateString
 
-            itemView.content.text =
-                Html.fromHtml(article.description ?: article.content, Html.FROM_HTML_MODE_COMPACT)
-                    .toString().replace("￼", "").substringBefore(".\n").trim().plus(".")
+            itemView.content.text = article.description?.let {
+                Html.fromHtml(it, Html.FROM_HTML_MODE_COMPACT)
+                    .toString().replace("￼", "").trim()
+            } ?: ""
         }
     }
 }
