@@ -7,7 +7,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 private const val PREF_NAME = "tiger"
-private const val POSTS_KEY = "notes"
+private const val POSTS_KEY = "posts"
+private const val TITLE_KEY = "channel_title"
 
 class DataStorage(context: Context) {
     private val manager by lazy {
@@ -23,8 +24,7 @@ class DataStorage(context: Context) {
                     put("author", it.author)
                     put("link", it.link)
                     put("pubDate", it.pubDate)
-                    put("description", it.description)
-                    put("content", it.content)
+                    put("content", it.content ?: it.description)
                     put("image", it.image)
                 })
             }
@@ -43,13 +43,21 @@ class DataStorage(context: Context) {
                     noteJson.getString("author"),
                     noteJson.getString("link"),
                     noteJson.getString("pubDate"),
-                    noteJson.getString("description"),
+                    null,
                     noteJson.getString("content"),
                     noteJson.getString("image")
                 )
             )
         }
         return posts
+    }
+
+    fun getChannelTitle(): String? {
+        return getString(TITLE_KEY)
+    }
+
+    fun setChannelTitle(title: String?) {
+        saveString(TITLE_KEY, title)
     }
 
     fun deletePosts() {

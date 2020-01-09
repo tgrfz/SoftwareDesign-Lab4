@@ -17,6 +17,8 @@ import com.example.softwaredesign_lab4.postfragment.PostFragment
 import com.example.softwaredesign_lab4.viewmodel.PostListViewModel
 import com.prof.rssparser.Article
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.random.Random
 
 private const val MY_SETTINGS = "my_settings"
 private const val CURRENT_URL = "curUrl"
@@ -26,7 +28,12 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
     private lateinit var sharedPref: SharedPreferences
     private var curUrl: String? = null
     private lateinit var model: PostListViewModel
-    private val autoUrl = "https://www.androidauthority.com/feed"
+    private val autoUrls = arrayOf(
+        "https://www.androidauthority.com/feed",
+        "https://tech.onliner.by/feed",
+        "https://people.onliner.by/feed",
+        "https://news.tut.by/rss/index.rss"
+    )
 
     private val isNetworkAvailable: Boolean
         get() {
@@ -55,7 +62,7 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
         curUrl?.let {
             swipeRefreshLayout.isRefreshing = true
             loadPosts()
-        } ?: urlAlert()
+        } ?: urlAlert(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -68,7 +75,7 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
         return true
     }
 
-    private fun urlAlert() {
+    private fun urlAlert(isFirst: Boolean = false) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setMessage("Enter URL")
         val input = EditText(this)
@@ -85,11 +92,18 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
                 loadPosts()
             }
             .setNeutralButton("Auto", null)
+            .apply {
+                if (!isFirst) {
+                    this.setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                }
+            }
             .create()
         alert.setOnShowListener {
             val btn = (it as AlertDialog).getButton(AlertDialog.BUTTON_NEUTRAL)
             btn.setOnClickListener {
-                input.setText(autoUrl)
+                input.setText(autoUrls[Random.nextInt(0, 4)])
             }
         }
         alert.show()
@@ -98,8 +112,7 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
     private fun loadPosts() {
         if (!isNetworkAvailable) {
             Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show()
-            model.loadFromCache(swipeRefreshLayout)
-            //TODO change bar title
+            model.loadFromCache(swipeRefreshLayout, supportActionBar)
         } else {
             model.fetchFeed(curUrl ?: "", swipeRefreshLayout, supportActionBar)
         }

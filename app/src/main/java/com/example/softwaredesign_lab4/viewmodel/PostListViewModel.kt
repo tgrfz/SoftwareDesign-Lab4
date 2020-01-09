@@ -27,22 +27,24 @@ class PostListViewModel(application: Application) : AndroidViewModel(application
         return articleListLive
     }
 
-    fun loadFromCache(swipe: SwipeRefreshLayout) {
+    fun loadFromCache(swipe: SwipeRefreshLayout, bar: ActionBar?) {
         coroutineScope.launch(Dispatchers.Main) {
             try {
-                setChannel(Channel(null, null, null, null, storage.getPosts().toMutableList()))
-                swipe.isRefreshing = false
+                setChannel(Channel(storage.getChannelTitle(), null, null, null, storage.getPosts().toMutableList()))
+                bar?.title = storage.getChannelTitle()
             } catch (e: Exception) {
                 e.printStackTrace()
-                setChannel(Channel(null, null, null, null, mutableListOf()))
+                Toast.makeText(getApplication(), e.message, Toast.LENGTH_LONG).show()
             }
+            swipe.isRefreshing = false
         }
     }
 
     private fun setChannel(channel: Channel) {
         articleListLive.postValue(channel)
         storage.deletePosts()
-        storage.insertPosts(channel.articles)
+        storage.insertPosts(channel.articles.take(10))
+        storage.setChannelTitle(channel.title)
     }
 
     override fun onCleared() {
@@ -56,13 +58,12 @@ class PostListViewModel(application: Application) : AndroidViewModel(application
                 val parser = Parser()
                 val articleList = parser.getChannel(url)
                 setChannel(articleList)
-                swipe.isRefreshing = false
                 bar?.title = articleList.title
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(getApplication(), e.message, Toast.LENGTH_LONG).show()
-                swipe.isRefreshing = false
             }
+            swipe.isRefreshing = false
         }
     }
 }
