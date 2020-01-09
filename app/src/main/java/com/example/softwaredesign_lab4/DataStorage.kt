@@ -2,7 +2,7 @@ package com.example.softwaredesign_lab4
 
 import android.content.Context
 import androidx.core.content.edit
-import com.example.softwaredesign_lab4.model.Post
+import com.prof.rssparser.Article
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -14,32 +14,40 @@ class DataStorage(context: Context) {
         context.getSharedPreferences(context.packageName + PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    fun insertPosts(posts: List<Post>) {
+    fun insertPosts(posts: List<Article>) {
         saveString(POSTS_KEY, JSONArray().apply {
             posts.forEach {
                 put(JSONObject().apply {
+                    put("guid", it.guid)
                     put("title", it.title)
-                    put("content", it.content)
-                    put("date", it.date)
-                    put("image", it.image)
+                    put("author", it.author)
                     put("link", it.link)
+                    put("pubDate", it.pubDate)
+                    put("description", it.description)
+                    put("content", it.content)
+                    put("image", it.image)
                 })
             }
         }.toString())
     }
 
-    fun getPosts(): List<Post> {
+    fun getPosts(): List<Article> {
         val postsJson = JSONArray(getString(POSTS_KEY) ?: "[]")
-        val posts = mutableListOf<Post>()
+        val posts = mutableListOf<Article>()
         repeat(postsJson.length()) { i ->
             val noteJson = postsJson.getJSONObject(i)
-            posts.add(Post(
-                noteJson.getString("title"),
-                noteJson.getString("content"),
-                noteJson.getString("date"),
-                noteJson.getString("image"),
-                noteJson.getString("link")
-            ))
+            posts.add(
+                Article(
+                    noteJson.getString("guid"),
+                    noteJson.getString("title"),
+                    noteJson.getString("author"),
+                    noteJson.getString("link"),
+                    noteJson.getString("pubDate"),
+                    noteJson.getString("description"),
+                    noteJson.getString("content"),
+                    noteJson.getString("image")
+                )
+            )
         }
         return posts
     }

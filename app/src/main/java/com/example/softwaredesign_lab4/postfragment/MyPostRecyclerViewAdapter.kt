@@ -1,20 +1,21 @@
 package com.example.softwaredesign_lab4.postfragment
 
+import android.text.Html
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-
 import com.example.softwaredesign_lab4.postfragment.PostFragment.OnListFragmentInteractionListener
 import com.example.softwaredesign_lab4.R
-import com.example.softwaredesign_lab4.model.Post
-
+import com.prof.rssparser.Article
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_post.view.*
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MyPostRecyclerViewAdapter(
-    private val mValues: List<Post>,
+    private val mValues: MutableList<Article>,
     private val mListener: OnListFragmentInteractionListener?
 ) : RecyclerView.Adapter<MyPostRecyclerViewAdapter.ViewHolder>() {
 
@@ -22,9 +23,15 @@ class MyPostRecyclerViewAdapter(
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as Post
+            val item = v.tag as Article
             mListener?.onListFragmentInteraction(item)
         }
+    }
+
+    fun update(posts: List<Article>) {
+        mValues.clear()
+        mValues.addAll(posts)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,24 +40,40 @@ class MyPostRecyclerViewAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mValues[position]
-        holder.mTitleView.text = item.title
-        holder.mContentView.text = item.content
-        holder.mDateView.text = item.date
-
-        with(holder.mView) {
-            tag = item
-            setOnClickListener(mOnClickListener)
-        }
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(mValues[position])
 
     override fun getItemCount(): Int = mValues.size
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mTitleView: TextView = mView.postTitle
-        val mContentView: TextView = mView.postContent
-        val mDateView: TextView = mView.postDate
-        //val mImageView: ImageView = mView.postImage
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(article: Article) {
+
+            val pubDateString = try {
+                val sourceDateString = article.pubDate ?: ""
+
+                val sourceSdf = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
+                val date = sourceSdf.parse(sourceDateString)
+
+                val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+                sdf.format(date ?: Date())
+
+            } catch (e: ParseException) {
+                e.printStackTrace()
+                article.pubDate
+            }
+
+            itemView.title.text = article.title
+
+            Picasso.get()
+                .load(article.image)
+                .placeholder(R.drawable.placeholder)
+                .into(itemView.image)
+
+            itemView.pubDate.text = pubDateString
+
+            itemView.content.text =
+                Html.fromHtml(article.content ?: article.description, Html.FROM_HTML_MODE_COMPACT)
+                    .toString().replace("￼", "").substringBefore(".\n").trim().plus(".")
+        }
     }
 }

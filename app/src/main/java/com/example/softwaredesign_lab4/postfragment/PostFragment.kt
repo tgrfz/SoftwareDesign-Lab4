@@ -9,20 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.softwaredesign_lab4.R
 
-import com.example.softwaredesign_lab4.model.Post
 import com.example.softwaredesign_lab4.viewmodel.PostListViewModel
+import com.prof.rssparser.Article
 
 class PostFragment : Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
     private var listAdapter: MyPostRecyclerViewAdapter? = null
     private lateinit var model: PostListViewModel
-    private lateinit var allPosts: List<Post>
+    private lateinit var allPosts: List<Article>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,8 +29,13 @@ class PostFragment : Fragment() {
     ): View? {
 
         model = ViewModelProviders.of(requireActivity())[PostListViewModel::class.java]
-        allPosts = model.getPosts().value ?: emptyList()
-        model.getPosts().observe(this, Observer<List<Post>> { allPosts = it ?: emptyList() })
+        allPosts = model.getArticleList().value?.articles ?: emptyList()
+        model.getArticleList().observe(this, Observer {
+            it?.let {
+                allPosts = it.articles
+                listAdapter?.update(allPosts)
+            }
+        })
 
         val view = inflater.inflate(R.layout.fragment_post_list, container, false)
         allPosts = emptyList()
@@ -40,7 +44,7 @@ class PostFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
                 listAdapter =
                     MyPostRecyclerViewAdapter(
-                        allPosts,
+                        allPosts.toMutableList(),
                         listener
                     )
                 adapter = listAdapter
@@ -70,6 +74,6 @@ class PostFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: Post?)
+        fun onListFragmentInteraction(item: Article)
     }
 }
