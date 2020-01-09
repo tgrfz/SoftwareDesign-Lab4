@@ -1,6 +1,7 @@
 package com.example.softwaredesign_lab4.postfragment
 
 import android.text.Html
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +49,11 @@ class MyPostRecyclerViewAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(article: Article) {
 
+            with(this.itemView) {
+                tag = article
+                setOnClickListener(mOnClickListener)
+            }
+
             val pubDateString = try {
                 val sourceDateString = article.pubDate ?: ""
 
@@ -72,7 +78,7 @@ class MyPostRecyclerViewAdapter(
             itemView.pubDate.text = pubDateString
 
             itemView.content.text =
-                Html.fromHtml(article.content ?: article.description, Html.FROM_HTML_MODE_COMPACT)
+                Html.fromHtml(article.description ?: article.content, Html.FROM_HTML_MODE_COMPACT)
                     .toString().replace("￼", "").substringBefore(".\n").trim().plus(".")
         }
     }

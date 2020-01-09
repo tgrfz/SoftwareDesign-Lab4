@@ -1,10 +1,12 @@
 package com.example.softwaredesign_lab4
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -18,6 +20,7 @@ import com.example.softwaredesign_lab4.viewmodel.PostListViewModel
 import com.prof.rssparser.Article
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+import kotlin.math.log
 import kotlin.random.Random
 
 private const val MY_SETTINGS = "my_settings"
@@ -119,6 +122,9 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
     }
 
     override fun onListFragmentInteraction(item: Article) {
-        //TODO on post click
+        val intent = Intent(this.baseContext, WebViewActivity::class.java)
+            .putExtra("link", item.link)
+        this.startActivity(intent)
+
     }
 }

@@ -24,7 +24,7 @@ class DataStorage(context: Context) {
                     put("author", it.author)
                     put("link", it.link)
                     put("pubDate", it.pubDate)
-                    put("content", it.content ?: it.description)
+                    put("description", it.description ?: it.content)
                     put("image", it.image)
                 })
             }
@@ -43,8 +43,8 @@ class DataStorage(context: Context) {
                     noteJson.getString("author"),
                     noteJson.getString("link"),
                     noteJson.getString("pubDate"),
+                    noteJson.getString("description"),
                     null,
-                    noteJson.getString("content"),
                     noteJson.getString("image")
                 )
             )

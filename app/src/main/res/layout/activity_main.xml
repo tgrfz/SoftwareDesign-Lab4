@@ -24,7 +24,7 @@
         android:layout_gravity="center">
 
         <fragment
-            android:id="@+id/notes_fragment"
+            android:id="@+id/posts_fragment"
             android:name="com.example.softwaredesign_lab4.postfragment.PostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
