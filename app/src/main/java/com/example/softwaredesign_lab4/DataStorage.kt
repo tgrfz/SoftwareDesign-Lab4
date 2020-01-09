@@ -1,16 +1,19 @@
 package com.example.softwaredesign_lab4
 
 import android.content.Context
+import android.util.Log
+import android.webkit.WebView
 import androidx.core.content.edit
 import com.prof.rssparser.Article
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 private const val PREF_NAME = "tiger"
 private const val POSTS_KEY = "posts"
 private const val TITLE_KEY = "channel_title"
 
-class DataStorage(context: Context) {
+class DataStorage(private val context: Context) {
     private val manager by lazy {
         context.getSharedPreferences(context.packageName + PREF_NAME, Context.MODE_PRIVATE)
     }
@@ -19,17 +22,32 @@ class DataStorage(context: Context) {
         saveString(POSTS_KEY, JSONArray().apply {
             posts.forEach {
                 put(JSONObject().apply {
-                    put("guid", it.guid)
-                    put("title", it.title)
-                    put("author", it.author)
-                    put("link", it.link)
-                    put("pubDate", it.pubDate)
-                    put("description", it.description)
-                    put("content", it.content)
-                    put("image", it.image)
+                    put("guid", it.guid ?: "")
+                    put("title", it.title ?: "")
+                    put("author", it.author ?: "")
+                    put("link", it.link ?: "")
+                    put("pubDate", it.pubDate ?: "")
+                    put("description", it.description ?: "")
+                    put("content", it.content ?: "")
+                    put("image", it.image ?: "")
                 })
             }
         }.toString())
+    }
+
+    fun setPosts(posts: List<Article>) {
+        deletePosts()
+        insertPosts(posts)
+    }
+
+    fun saveWebViews(articles: List<Article>) {
+        val webViews = mutableListOf<WebView>()
+        for (article in articles) {
+            val webView = WebView(context)
+            webView.saveWebArchive(context.filesDir.absolutePath + "/cache/" + article.link)
+            webView.loadUrl(article.link)
+            webViews.add(webView)
+        }
     }
 
     fun getPosts(): List<Article> {

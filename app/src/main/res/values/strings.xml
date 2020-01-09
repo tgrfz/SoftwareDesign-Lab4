@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">SoftwareDesign-Lab4</string>
+    <string name="app_name">RSS reader</string>
     <string name="post_image">Post image</string>
     <string name="title">Title</string>
     <string name="date">Date</string>
-    <string name="points">...</string>
+    <string name="points">…</string>
     <string name="enter_url">Enter URL</string>
     <string name="start">Start</string>
     <string name="auto">auto</string>

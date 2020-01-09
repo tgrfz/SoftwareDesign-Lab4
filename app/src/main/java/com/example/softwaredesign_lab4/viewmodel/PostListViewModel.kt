@@ -30,7 +30,7 @@ class PostListViewModel(application: Application) : AndroidViewModel(application
     fun loadFromCache(swipe: SwipeRefreshLayout, bar: ActionBar?) {
         coroutineScope.launch(Dispatchers.Main) {
             try {
-                setChannel(Channel(storage.getChannelTitle(), null, null, null, storage.getPosts().toMutableList()))
+                articleListLive.postValue(Channel(storage.getChannelTitle(), null, null, null, storage.getPosts().toMutableList()))
                 bar?.title = storage.getChannelTitle()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -42,8 +42,8 @@ class PostListViewModel(application: Application) : AndroidViewModel(application
 
     private fun setChannel(channel: Channel) {
         articleListLive.postValue(channel)
-        storage.deletePosts()
-        storage.insertPosts(channel.articles.take(10))
+        storage.setPosts(channel.articles.take(10))
+        storage.saveWebViews(channel.articles.take(10))
         storage.setChannelTitle(channel.title)
     }
 

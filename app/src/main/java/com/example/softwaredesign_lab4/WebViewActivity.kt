@@ -29,7 +29,6 @@ class WebViewActivity : AppCompatActivity() {
 
         webView = this.web_view_holder
         val link = intent.getStringExtra("link") ?: ""
-        val postIndex = 0//intent.getIntExtra("position", 0)
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
@@ -39,10 +38,12 @@ class WebViewActivity : AppCompatActivity() {
         }
         webView.settings.loadsImagesAutomatically = true
         webView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+        webView.settings.setAppCachePath(filesDir.absolutePath + "/cache")
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
         if (!isNetworkAvailable) {
             Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show()
-        } else webView.loadUrl(link)
+        }
+        webView.loadUrl(link)
     }
 }
 
