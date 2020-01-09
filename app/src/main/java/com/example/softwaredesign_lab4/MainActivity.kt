@@ -1,19 +1,22 @@
 package com.example.softwaredesign_lab4
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
+import androidx.lifecycle.ViewModelProviders
 import com.example.softwaredesign_lab4.model.Post
+import com.example.softwaredesign_lab4.postfragment.PostFragment
+import com.example.softwaredesign_lab4.tasks.CacheLoadingTask
+import com.example.softwaredesign_lab4.tasks.RssLoadingTask
+import com.example.softwaredesign_lab4.viewmodel.PostListViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 private const val MY_SETTINGS = "my_settings"
@@ -23,10 +26,13 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
 
     private lateinit var sharedPref: SharedPreferences
     private var curUrl: String? = null
+    private lateinit var model: PostListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        model = ViewModelProviders.of(this)[PostListViewModel::class.java]
 
         val toolbar = findViewById<Toolbar>(R.id.app_bar_main)
         setSupportActionBar(toolbar)
@@ -81,11 +87,12 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
         if (!NetworkState.getNetworkStatus(this)) {
             swipeRefreshLayout.isRefreshing = false
             Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show()
-            //TODO CacheLoadingTask
+            CacheLoadingTask(model, swipeRefreshLayout, getApplication()).execute()
         } else {
-            //TODO RSSFeedControl
+            RssLoadingTask(model, swipeRefreshLayout, this).execute(curUrl)
         }
     }
+
 
     override fun onListFragmentInteraction(item: Post?) {
         //TODO

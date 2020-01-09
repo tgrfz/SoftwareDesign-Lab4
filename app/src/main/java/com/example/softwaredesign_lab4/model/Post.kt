@@ -5,12 +5,12 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Post(
-    val title: String,
-    val content: String,
-    val date: String,
-    val image: String,
+    var title: String,
+    var content: String,
+    var date: String,
+    var image: String,
     @PrimaryKey
-    val link: String,
+    var link: String,
     var cachedImage: String = ""
 ) {
     constructor() : this("", "", "", "", "")

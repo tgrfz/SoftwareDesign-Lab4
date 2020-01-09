@@ -25,7 +25,7 @@
 
         <fragment
             android:id="@+id/notes_fragment"
-            android:name="com.example.softwaredesign_lab4.PostFragment"
+            android:name="com.example.softwaredesign_lab4.postfragment.PostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/fragment_post_list" />

@@ -1,6 +1,5 @@
-package com.example.softwaredesign_lab4
+package com.example.softwaredesign_lab4.postfragment
 
-import android.media.Image
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 
-import com.example.softwaredesign_lab4.PostFragment.OnListFragmentInteractionListener
+import com.example.softwaredesign_lab4.postfragment.PostFragment.OnListFragmentInteractionListener
+import com.example.softwaredesign_lab4.R
 import com.example.softwaredesign_lab4.model.Post
 
 import kotlinx.android.synthetic.main.fragment_post.view.*
@@ -51,6 +51,6 @@ class MyPostRecyclerViewAdapter(
         val mTitleView: TextView = mView.postTitle
         val mContentView: TextView = mView.postContent
         val mDateView: TextView = mView.postDate
-        val mImageView: ImageView = mView.postImage
+        //val mImageView: ImageView = mView.postImage
     }
 }
