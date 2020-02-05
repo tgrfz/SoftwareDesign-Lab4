@@ -44,7 +44,7 @@ class DataStorage(private val context: Context) {
         val webViews = mutableListOf<WebView>()
         for (article in articles) {
             val webView = WebView(context)
-            webView.saveWebArchive(context.filesDir.absolutePath + "/cache/" + article.link)
+            //webView.saveWebArchive(context.filesDir.absolutePath + "/cache/" + article.link)
             webView.loadUrl(article.link)
             webViews.add(webView)
         }

@@ -51,6 +51,12 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
         setContentView(R.layout.activity_main)
 
         model = ViewModelProviders.of(this)[PostListViewModel::class.java]
+        model.getArticleList().observe(this, androidx.lifecycle.Observer {
+            it?.let {
+                supportActionBar?.title = it.title
+                swipeRefreshLayout.isRefreshing = false
+            }
+        })
 
         val toolbar = findViewById<Toolbar>(R.id.app_bar_main)
         setSupportActionBar(toolbar)
@@ -115,9 +121,9 @@ class MainActivity : AppCompatActivity(), PostFragment.OnListFragmentInteraction
     private fun loadPosts() {
         if (!isNetworkAvailable) {
             Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show()
-            model.loadFromCache(swipeRefreshLayout, supportActionBar)
+            model.loadFromCache()
         } else {
-            model.fetchFeed(curUrl ?: "", swipeRefreshLayout, supportActionBar)
+            model.fetchFeed(curUrl ?: "")
         }
     }
 

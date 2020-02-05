@@ -27,16 +27,14 @@ class PostListViewModel(application: Application) : AndroidViewModel(application
         return articleListLive
     }
 
-    fun loadFromCache(swipe: SwipeRefreshLayout, bar: ActionBar?) {
+    fun loadFromCache() {
         coroutineScope.launch(Dispatchers.Main) {
             try {
                 articleListLive.postValue(Channel(storage.getChannelTitle(), null, null, null, storage.getPosts().toMutableList()))
-                bar?.title = storage.getChannelTitle()
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(getApplication(), e.message, Toast.LENGTH_LONG).show()
             }
-            swipe.isRefreshing = false
         }
     }
 
@@ -52,18 +50,16 @@ class PostListViewModel(application: Application) : AndroidViewModel(application
         viewModelJob.cancel()
     }
 
-    fun fetchFeed(url: String, swipe: SwipeRefreshLayout, bar: ActionBar?) {
+    fun fetchFeed(url: String) {
         coroutineScope.launch(Dispatchers.Main) {
             try {
                 val parser = Parser()
                 val articleList = parser.getChannel(url)
                 setChannel(articleList)
-                bar?.title = articleList.title
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(getApplication(), e.message, Toast.LENGTH_LONG).show()
             }
-            swipe.isRefreshing = false
         }
     }
 }
